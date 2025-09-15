@@ -1,0 +1,44 @@
+{
+	"schemaVersion": 1,
+	"id": "command-helper",
+	"version": "${version}",
+	"name": "Command Helper",
+	"description": "This is an example description! Tell everyone what your mod is about!",
+	"authors": [
+		"Me!"
+	],
+	"contact": {
+		"homepage": "https://fabricmc.net/",
+		"sources": "https://github.com/FabricMC/fabric-example-mod"
+	},
+	"license": "CC0-1.0",
+	"icon": "assets/command-helper/icon.png",
+	"environment": "*",
+	"entrypoints": {
+		"main": [
+			"com.command_helper.CommandHelper"
+		],
+		"client": [
+			"com.command_helper.CommandHelperClient"
+		],
+		"fabric-datagen": [
+			"com.command_helper.CommandHelperDataGenerator"
+		]
+	},
+	"mixins": [
+		"command-helper.mixins.json",
+		{
+			"config": "command-helper.client.mixins.json",
+			"environment": "client"
+		}
+	],
+	"depends": {
+		"fabricloader": ">=0.17.2",
+		"minecraft": "~1.21.7",
+		"java": ">=21",
+		"fabric-api": "*"
+	},
+	"suggests": {
+		"another-mod": "*"
+	}
+}
