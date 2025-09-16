@@ -1,4 +1,4 @@
-package com.command_helper.data_controller;
+package com.command_helper.data;
 
 public class CommandDataCollection {
     CommandData[] data;

@@ -1,4 +1,5 @@
-package com.command_helper.data_controller;
+package com.command_helper.data;
+
 
 public class CommandData {
     int id;
@@ -13,6 +14,11 @@ public class CommandData {
 
     public boolean isEmpty(){
         return command.isEmpty();
+    }
+
+    @Override
+    public String toString(){
+        return command;
     }
 }
 

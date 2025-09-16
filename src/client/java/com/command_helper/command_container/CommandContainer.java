@@ -1,10 +1,15 @@
-package com.command_helper.command_controller;
+package com.command_helper.command_container;
 
-import com.command_helper.data_controller.CommandData;
-import com.command_helper.data_controller.DataController;
+import com.command_helper.data.CommandData;
+import com.command_helper.data.DataController;
 
 import java.util.HashMap;
 
+/**
+* @Description
+* @Author Hykal_311
+* @Date
+*/
 public class CommandContainer {
 
     //构造函数
@@ -31,7 +36,7 @@ public class CommandContainer {
 
     //执行发送命令的逻辑
     public CommandData getCommandData(int id){
-        return dataHashMap.get(id);
+        return dataHashMap.getOrDefault(id, null);
     }
 
     //添加新命令
@@ -48,6 +53,10 @@ public class CommandContainer {
         dataHashMap.remove(id);
         SaveCommandContainer();//修改时保存一次,之后添加Log相关代码
         return true;
+    }
+
+    public CommandData[] getCurrentData(){
+        return dataHashMap.values().toArray(new CommandData[0]);
     }
 
     public boolean SaveCommandContainer(){
