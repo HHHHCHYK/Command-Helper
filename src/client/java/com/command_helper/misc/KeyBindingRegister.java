@@ -11,13 +11,14 @@ import org.lwjgl.glfw.GLFW;
 import javax.swing.text.JTextComponent;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.Random;
 
 public class KeyBindingRegister {
     private HashMap<Integer,KeyBinding> Keys = new HashMap<>();
-
+    static int cnt = 0;
     public KeyBinding registry(int GLFWCode){
         return KeyBindingHelper.registerKeyBinding(new KeyBinding(
-                "key."+ CommandManager.MOD_ID_LOW + ".active",
+                "key."+ CommandManager.MOD_ID_LOW + ".event_" + cnt++,
                 GLFWCode,
                 "category." + CommandManager.MOD_ID_LOW + ".controls"
                 )

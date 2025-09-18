@@ -32,7 +32,10 @@ public class CommandSendController {
     */
     private void SendCommand(String command){
         ClientPlayerEntity player = CommandManager.getInstance().getPlayerClient();
-        if(player == null)return;
+        if(player == null){
+            CommandManager.Log( this.toString() + ":Player is null");
+            return;
+        }
         if(command.startsWith("/")){
             String com = command.substring(1);
             var client = CommandManager.getInstance().getClient();
@@ -42,6 +45,7 @@ public class CommandSendController {
             );
         }
         else{
+            CommandManager.Log("Command Format Wrong");
             player.sendMessage(getNotCommandWarning(),false);
         }
     }
@@ -51,6 +55,9 @@ public class CommandSendController {
         CommandData data = CommandManager.getInstance().commandContainer.getCommandData(id);
         if(data != null && !data.isEmpty()){
             SendCommand(data.toString());
+        }
+        else{
+            CommandManager.Log("Cannot find data with id");
         }
     }
 

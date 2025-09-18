@@ -17,11 +17,11 @@ public class CommandHelperClient implements ClientModInitializer {
 		// This entrypoint is suitable for setting up client-specific logic, such as rendering.
 
 		CommandManager.getInstance().Initialize();//初始化
-		Debug();
-
+		CommandManager.Log("CommandManager init finished");
 	}
 
 	private void Debug(){
+
 	}
 
 }

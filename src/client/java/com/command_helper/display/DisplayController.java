@@ -2,18 +2,19 @@ package com.command_helper.display;
 
 import com.command_helper.CommandManager;
 import com.command_helper.display.screen.CommandHelperScreen;
+import net.minecraft.client.gui.screen.Screen;
 
 public class DisplayController {
-    CommandHelperScreen screen;
+    CommandHelperScreen commandHelperScreen;
 
     boolean ScreenWasActive = false;
 
     public DisplayController(){
-        this.screen = CommandHelperScreen.create();
+        this.commandHelperScreen = CommandHelperScreen.create();
     }
 
     public void OpenUI(){
-        CommandManager.getInstance().getClient().setScreen(screen);
+        CommandManager.getInstance().getClient().setScreen(commandHelperScreen);
         ScreenWasActive = true;
     }
 
@@ -29,6 +30,18 @@ public class DisplayController {
         if(ScreenWasActive)CloseUI();
         else OpenUI();
     }
+
+    public Screen getScreen(CommandManager.Screens screens){
+        switch (screens){
+            case Command_Helper_Screen -> {
+                return commandHelperScreen;
+            }
+            default -> {
+                return null;
+            }
+        }
+    }
+
 
     public void FlashUI(){
 
