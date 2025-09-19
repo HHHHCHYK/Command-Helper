@@ -6,7 +6,6 @@ import com.command_helper.data.CommandData;
 import com.command_helper.data.CommandDataCollection;
 import com.command_helper.data.DataController;
 import com.command_helper.display.DisplayController;
-import com.command_helper.display.screen.CommandHelperScreen;
 import com.command_helper.misc.KeyBindingRegister;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.gui.screen.Screen;
@@ -14,8 +13,6 @@ import net.minecraft.client.network.ClientPlayerEntity;
 import org.lwjgl.glfw.GLFW;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
-import java.util.Arrays;
 
 public class CommandManager {
     //单例
@@ -56,6 +53,17 @@ public class CommandManager {
         keyBindingRegister.AddEvent(GLFW.GLFW_KEY_T,()->{
             displayController.ReverseUI();
         });
+    }
+
+    //容器操作
+    public void addCommand(String name,String command){
+        if(commandContainer == null)return;
+        commandContainer.addCommand(name,command);
+    }
+
+    public void removeCommand(int id){
+        if(commandContainer == null)return;
+        commandContainer.removeCommand(id);
     }
 
 

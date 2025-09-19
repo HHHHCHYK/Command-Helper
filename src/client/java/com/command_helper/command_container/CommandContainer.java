@@ -54,15 +54,15 @@ public class CommandContainer {
     }
 
     //添加新命令
-    public void AddCommand(String command) {
-        if(command == null)return;
+    public void addCommand(String name, String command) {
+        if(name == null || command == null)return;
         int id = GetNewId();
         CommandData data = new CommandData(id,command);
         dataHashMap.put(id,data);
         SaveCommandContainer();//修改时保存一次,之后添加Log相关代码
     }
 
-    public boolean RemoveCommand(int id){
+    public boolean removeCommand(int id){
         if(!dataHashMap.containsKey(id))return false;
         dataHashMap.remove(id);
         SaveCommandContainer();//修改时保存一次,之后添加Log相关代码
