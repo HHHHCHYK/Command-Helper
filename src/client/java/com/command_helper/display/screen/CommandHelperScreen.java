@@ -1,6 +1,7 @@
 package com.command_helper.display.screen;
 
 import com.command_helper.CommandManager;
+import com.command_helper.data.CommandData;
 import com.command_helper.display.text.ButtonWidgetHandle;
 import com.command_helper.display.text.ButtonWidgetsController;
 import net.minecraft.client.MinecraftClient;
@@ -15,9 +16,10 @@ import net.minecraft.util.Identifier;
 public class CommandHelperScreen extends Screen {
     public static final String ScreenTitle = "Command Helper";
 
-    int margin = 0;
-    int ElementHeight = 24;
-    int ElementGap = 24;
+    //私有常量
+    final int margin = 0;
+    final int ElementHeight = 24;
+    final int ElementGap = 24;
 
     //整个屏幕
     int windowWidth;
@@ -58,7 +60,7 @@ public class CommandHelperScreen extends Screen {
         }
         //初始化多行按钮组件
         if (buttonWidgetsController == null) {
-            buttonWidgetsController = ButtonWidgetsController.of(textX, textY, (int) (windowWidth * 0.9), this.height, CommandManager.getInstance().getCurrentData());
+            buttonWidgetsController = ButtonWidgetsController.of(textX, textY, windowWidth, this.height, CommandManager.getInstance().getCurrentData(),ElementHeight);
         }
 
         renderCurrentCanvas();
@@ -73,7 +75,7 @@ public class CommandHelperScreen extends Screen {
             if (buttonWidgetsController == null) {
                 return;
             }
-            buttonWidgetsController.render(context, mouseX, mouseY, deltaTicks);//处理更新逻辑
+            buttonWidgetsController.renderHandles(context, mouseX, mouseY, deltaTicks);//处理更新逻辑
         }
     }
 
@@ -88,9 +90,10 @@ public class CommandHelperScreen extends Screen {
     }
 
     private void renderCurrentCanvas() {
+        clearChildren();    //清除所有Children
         if (CurrentCanvas == CanvasType.NormalCanvas) {
             //渲染当前NormalCanvas
-            buttonWidgetsController.Init();
+            buttonWidgetsController.init();
             renderExitButton();
             renderAddButton();
         } else {
@@ -122,6 +125,11 @@ public class CommandHelperScreen extends Screen {
         addDrawableChild(exitButton);
     }
 
+    public void flashButtonList(CommandData[] data){
+        buttonWidgetsController.flashHandles(data);
+        init();
+    }
+
     private void renderAddButton() {
         if (addButton == null) {
             addButton = ButtonWidget.builder(
@@ -145,6 +153,7 @@ public class CommandHelperScreen extends Screen {
                     (int) (windowWidth * 0.5), 24,
                     Text.literal("命令名称")
             );
+            NameText.setText("New Command");
 
             NameText.setWidth((int) (windowWidth * 0.3));
             NameText.setHeight(24);
@@ -161,8 +170,8 @@ public class CommandHelperScreen extends Screen {
                     (int) (windowWidth * 0.5), 24,
                     Text.literal("命令内容")
             );
-            CommandText.setTextPredicate(string -> string.matches("[a-zA-Z0-9/]*"));
-
+            CommandText.setTextPredicate(string -> string.matches("^[\\x00-\\x7F]*$"));
+            CommandText.setText("Command");
             CommandText.setWidth((int) (windowWidth * 0.3));
             CommandText.setHeight(24);
             CommandText.setX((int) (width * 0.35));
@@ -196,6 +205,7 @@ public class CommandHelperScreen extends Screen {
         addDrawableChild(ConfirmButton);
     }
 
+
     /**
      * @param widgetHandle 需要被添加的按钮Handles
      * @return None
@@ -207,6 +217,7 @@ public class CommandHelperScreen extends Screen {
         //判断内容
         if (widgetHandle == null || widgetHandle.buttonWidget == null) return;//判空
         addDrawableChild(widgetHandle.buttonWidget);
+        addDrawableChild(widgetHandle.deleteButtonWidget);
     }
 
     @Override

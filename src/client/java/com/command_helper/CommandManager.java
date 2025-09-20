@@ -6,6 +6,7 @@ import com.command_helper.data.CommandData;
 import com.command_helper.data.CommandDataCollection;
 import com.command_helper.data.DataController;
 import com.command_helper.display.DisplayController;
+import com.command_helper.display.screen.CommandHelperScreen;
 import com.command_helper.misc.KeyBindingRegister;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.gui.screen.Screen;
@@ -59,11 +60,19 @@ public class CommandManager {
     public void addCommand(String name,String command){
         if(commandContainer == null)return;
         commandContainer.addCommand(name,command);
+        //刷新Container
+        commandContainer.ReInitialize();
+        //刷新UI
+         ((CommandHelperScreen)getScreen(Screens.Command_Helper_Screen)).flashButtonList(getCurrentData()); //获取Command Data并且刷新UI
     }
 
     public void removeCommand(int id){
         if(commandContainer == null)return;
         commandContainer.removeCommand(id);
+        //刷新Container
+        commandContainer.ReInitialize();
+        //刷新UI
+        ((CommandHelperScreen)getScreen(Screens.Command_Helper_Screen)).flashButtonList(getCurrentData()); //获取Command Data并且刷新UI
     }
 
 
@@ -76,13 +85,13 @@ public class CommandManager {
     }
 
     public MinecraftClient getClient(){
-        if(client == null)client = MinecraftClient.getInstance();
+        client = MinecraftClient.getInstance();
         if(client != null)return client;
         else throw new NullPointerException("Client is null");
     }
 
     public ClientPlayerEntity getPlayerClient(){
-        if(playerClient == null)playerClient = getClient().player;
+        playerClient = getClient().player;
         if(playerClient != null)return playerClient;
         else throw new NullPointerException("Client.Player is null");
     }
@@ -131,6 +140,8 @@ public class CommandManager {
             default -> LOGGER.info(logText);
         }
     }
+
+
     public enum LogType{
         Info,
         Warning,

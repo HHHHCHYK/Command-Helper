@@ -1,22 +1,31 @@
 package com.command_helper.data;
 
+import com.fasterxml.jackson.annotation.JsonCreator;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
-
 
 public class CommandData {
     @JsonProperty
-    int id; //命令编号
+    public int id; //命令编号
     @JsonProperty
-    String name = "New-Command"; //命令数据
+    public String name = "New-Command"; //命令数据
     @JsonProperty
-    String command; //命令主体S
+    public String command; //命令主体S
 
-    public CommandData(int id,String command){
+    @JsonCreator
+    public CommandData(
+            @JsonProperty("id") int id,
+            @JsonProperty("name") String name,
+            @JsonProperty("command") String command){
         if(command.startsWith("/")){
+            this.id = id;
+            this.name = name;
             this.command = command;
         }
     }
 
+
+    @JsonIgnore
     public boolean isEmpty(){
         return command.isEmpty();
     }
@@ -37,8 +46,8 @@ public class CommandData {
         return command;
     }
 
-    public static CommandData TestCommandData(){
-        return new CommandData(-1,"/time set day");
+    public static CommandData getTestCommandData(){
+        return new CommandData(-1,"Test-Command","/time set day");
     }
 }
 

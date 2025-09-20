@@ -3,14 +3,12 @@ package com.command_helper.display.text;
 import com.command_helper.CommandManager;
 import com.command_helper.data.CommandData;
 import com.command_helper.display.screen.CommandHelperScreen;
-import com.sun.jna.platform.win32.Variant;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.font.TextRenderer;
 import net.minecraft.client.gui.DrawContext;
 import net.minecraft.client.gui.widget.ButtonWidget;
 import net.minecraft.text.Text;
-
-import java.util.Objects;
+import org.jetbrains.annotations.NotNull;
 
 public class ButtonWidgetHandle {
     private static TextRenderer renderer;
@@ -31,27 +29,48 @@ public class ButtonWidgetHandle {
 
     ButtonWidgetsController controller;
 
-
     public int commandID = -1;
     public String name;
 
     public ButtonWidget buttonWidget;
+    public ButtonWidget deleteButtonWidget;
 
     //构造
-    public ButtonWidgetHandle(int x, int y, int width, int height, CommandData data) {
+    public ButtonWidgetHandle(int x, int y, int width, int height,@NotNull  CommandData data) {
         originX = x;
         originY = y;
         widgetWidth = width;
         widgetHeight = height;
+
+        //初始化命令按钮
         this.buttonWidget = ButtonWidget.builder(Text.literal(data.getName()), (buttonWidget) -> {
             //唯一作用故不作为参数传递
             CommandManager.getInstance().OnCommandButtonClicked(this.commandID);
             //Debug:测试按钮点击
-            /*Objects.requireNonNull(CommandManager.getInstance().getClient().player)
-                    .sendMessage(Text.literal("按钮被点击"),false);*/
+            CommandManager.Log(CommandManager.LogType.Info, "按钮被点击");
         }).build();
+        buttonWidget.setWidth((int) (widgetWidth * 0.8));
+        buttonWidget.setHeight(widgetHeight);
+
         commandID = data.getId();
         this.name = data.getName();
+
+        //初始化删除按钮
+        deleteButtonWidget = ButtonWidget.builder(
+                Text.literal("删除"),
+                button -> {
+                    CommandManager.Log(CommandManager.LogType.Info, "按钮被删除，CommandID = " + commandID);
+                    CommandManager.getInstance().removeCommand(commandID);
+                }
+        ).build();
+        deleteButtonWidget.setWidth((int) (widgetWidth * 0.1));
+        deleteButtonWidget.setHeight(widgetHeight);
+    }
+
+    public void resetCommandData(@NotNull CommandData data){
+        this.commandID = data.getId();
+        this.name = data.name;
+        buttonWidget.setMessage(Text.literal(data.name));
     }
 
     public void Init() {
@@ -65,24 +84,45 @@ public class ButtonWidgetHandle {
     public void render(DrawContext context, int offsetX, int offsetY, int mouseX, int mouseY, float deltaTicks) {
         buttonWidget.setX(originX + offsetX);
         buttonWidget.setY(originY + offsetY);
+        deleteButtonWidget.setX(originX + offsetX + widgetWidth);
+        deleteButtonWidget.setY(originY + offsetY);
+
         //context.drawBorder(originX + offsetX,originY + offsetY - widgetHeight/2,widgetWidth,widgetHeight, 0xFFFFFFFF);
         //buttonWidget.render(context,mouseX,mouseY,deltaTicks);
     }
 
-    private boolean isVisible() {if (controller == null) return true;
+    public void setPosition(int x,int y){
+        originX = x;
+        originY = y;
+    }
 
-        int btnLeft   = originX;
-        int btnTop    = originY;
-        int btnRight  = originX + widgetWidth;
+    public void setWidth(int width){
+        this.widgetWidth = width;
+        buttonWidget.setWidth((int) (width * 0.8));
+        deleteButtonWidget.setWidth((int) (width * 0.1));
+    }
+
+    public void setHeight(int height){
+        widgetHeight = height;
+        buttonWidget.setHeight(height);
+        deleteButtonWidget.setHeight(height);
+    }
+
+    private boolean isVisible() {
+        if (controller == null) return true;
+
+        int btnLeft = originX;
+        int btnTop = originY;
+        int btnRight = originX + widgetWidth;
         int btnBottom = originY + widgetHeight;
 
-        int boxLeft   = controller.originX;
-        int boxTop    = controller.originY;
-        int boxRight  = controller.originX + controller.width;
+        int boxLeft = controller.originX;
+        int boxTop = controller.originY;
+        int boxRight = controller.originX + controller.width;
         int boxBottom = controller.originY + controller.height;
 
         // 判断两个矩形是否相交
-        return  btnRight > boxLeft &&
+        return btnRight > boxLeft &&
                 btnLeft < boxRight &&
                 btnBottom > boxTop &&
                 btnTop < boxBottom;
@@ -98,7 +138,7 @@ public class ButtonWidgetHandle {
         return originY;
     }
 
-    ButtonWidget getTextFieldWidget() {
+    ButtonWidget getButtonWidget() {
         return buttonWidget;
     }
 
@@ -110,6 +150,7 @@ public class ButtonWidgetHandle {
             return true;
         } else return false;
     }
+
 
 }
 

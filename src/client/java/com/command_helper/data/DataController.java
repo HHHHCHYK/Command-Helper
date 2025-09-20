@@ -19,10 +19,15 @@ public class DataController {
         try{
             Path path = Path.of(getGameDir(),"Command Helper" , fileName);
             Files.createDirectories(path.getParent());
-            if(!path.toFile().exists())return null;
+            if(!path.toFile().exists()){
+                CommandManager.Log(CommandManager.LogType.Error,"找不到目标文件");
+                return null;
+            }
             String json = Files.readString(path);
+            if(json.isEmpty())CommandManager.Log(CommandManager.LogType.Warning,"读取的文件为空");
             return objectMapper.readValue(json,CommandDataCollection.class);
         } catch (IOException e) {
+            CommandManager.Log(CommandManager.LogType.Error,e.getMessage());
             return null;
         }
     }

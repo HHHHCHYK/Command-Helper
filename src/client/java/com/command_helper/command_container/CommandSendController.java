@@ -40,6 +40,7 @@ public class CommandSendController {
             String com = command.substring(1);
             var client = CommandManager.getInstance().getClient();
             client.execute(()-> client.send(()->{//延迟1帧执行命令
+
                 CommandManager.getInstance().getPlayerClient().networkHandler.sendChatCommand(com);
                     })
             );

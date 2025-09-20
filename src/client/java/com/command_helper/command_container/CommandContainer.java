@@ -20,14 +20,14 @@ public class CommandContainer {
     }
 
     private final HashMap<Integer, CommandData> dataHashMap = new HashMap<>();
-    private DataController controller;
+    private DataController dataController;
 
     protected boolean WasInit;
 
     //初始化
     public void Initialize(){
-        if(controller == null)controller = new DataController();
-        CommandDataCollection dataController = controller.ReadData();
+        if(dataController == null) dataController = new DataController();
+        CommandDataCollection dataController = this.dataController.ReadData();
         if(dataController == null || dataController.data.isEmpty()){
             CommandManager.Log(CommandManager.LogType.Error,"读取数据失败");
             return;
@@ -49,7 +49,6 @@ public class CommandContainer {
 
     //执行发送命令的逻辑
     public CommandData getCommandData(int id){
-
         return dataHashMap.getOrDefault(id, null);
     }
 
@@ -57,33 +56,32 @@ public class CommandContainer {
     public void addCommand(String name, String command) {
         if(name == null || command == null)return;
         int id = GetNewId();
-        CommandData data = new CommandData(id,command);
+        CommandData data = new CommandData(id,name,command);
         dataHashMap.put(id,data);
         SaveCommandContainer();//修改时保存一次,之后添加Log相关代码
     }
 
-    public boolean removeCommand(int id){
-        if(!dataHashMap.containsKey(id))return false;
+    public void removeCommand(int id){
+        if(!dataHashMap.containsKey(id))return;
         dataHashMap.remove(id);
         SaveCommandContainer();//修改时保存一次,之后添加Log相关代码
-        return true;
     }
 
     public CommandData[] getCurrentData(){
-        if(dataHashMap.isEmpty()){
-            //添加测试命令
-            CommandData data = new CommandData(1,"/time set day");
-            dataHashMap.put(data.getId(),data);
-        }
+//        if(dataHashMap.isEmpty()){
+//            //添加测试命令
+//            CommandData data = new CommandData(1,"Test-Command","/time set day");
+//            dataHashMap.put(data.getId(),data);
+//        }
         return dataHashMap.values().toArray(new CommandData[0]);
     }
 
-    public boolean SaveCommandContainer(){
-        return true;
+    public void SaveCommandContainer(){
+        dataController.WriteData(new CommandDataCollection(getCurrentData()));
     }
 
     public int GetNewId(){
-        if(dataHashMap == null || dataHashMap.isEmpty()){
+        if(dataHashMap.isEmpty()){
             return 1;
         }
         else{
