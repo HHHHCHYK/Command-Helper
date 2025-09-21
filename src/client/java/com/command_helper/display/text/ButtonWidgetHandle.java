@@ -84,7 +84,7 @@ public class ButtonWidgetHandle {
     public void render(DrawContext context, int offsetX, int offsetY, int mouseX, int mouseY, float deltaTicks) {
         buttonWidget.setX(originX + offsetX);
         buttonWidget.setY(originY + offsetY);
-        deleteButtonWidget.setX(originX + offsetX + widgetWidth);
+        deleteButtonWidget.setX((int) (originX + offsetX + widgetWidth*0.9));
         deleteButtonWidget.setY(originY + offsetY);
 
         //context.drawBorder(originX + offsetX,originY + offsetY - widgetHeight/2,widgetWidth,widgetHeight, 0xFFFFFFFF);

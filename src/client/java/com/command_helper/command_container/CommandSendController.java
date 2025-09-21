@@ -13,8 +13,6 @@ import org.jetbrains.annotations.NotNull;
 public class CommandSendController {
     //依赖的类
     CommandContainer container;     //命令存储器
-    MinecraftClient client;         //客户端实例
-    ClientPlayerEntity playerClient;    //客户端玩家实例
 
     //文本成员
     String NoCommandWarningText = "命令格式错误，请检查";
@@ -25,7 +23,7 @@ public class CommandSendController {
     }
 
     /**
-    * @Description 执行最后的发送动作
+    * &#064;Description  执行最后的发送动作
     * * @param command 发送文本
     * @Author Hykal_311
     * @Date
@@ -33,15 +31,19 @@ public class CommandSendController {
     private void SendCommand(String command){
         ClientPlayerEntity player = CommandManager.getInstance().getPlayerClient();
         if(player == null){
-            CommandManager.Log( this.toString() + ":Player is null");
+            CommandManager.Log( this + ":Player is null");
             return;
         }
         if(command.startsWith("/")){
-            String com = command.substring(1);
+            //读取所有的命令
+            String[] commands = command.split(";");
             var client = CommandManager.getInstance().getClient();
             client.execute(()-> client.send(()->{//延迟1帧执行命令
-
-                CommandManager.getInstance().getPlayerClient().networkHandler.sendChatCommand(com);
+                for(String ss : commands){
+                    if(ss.startsWith("/")){
+                        CommandManager.getInstance().getPlayerClient().networkHandler.sendChatCommand(ss.substring(1));
+                    }
+                }
                     })
             );
         }

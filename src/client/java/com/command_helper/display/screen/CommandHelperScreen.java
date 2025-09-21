@@ -20,6 +20,7 @@ public class CommandHelperScreen extends Screen {
     final int margin = 0;
     final int ElementHeight = 24;
     final int ElementGap = 24;
+    final int MaxCommandLength = 1000000000;
 
     //整个屏幕
     int windowWidth;
@@ -91,10 +92,11 @@ public class CommandHelperScreen extends Screen {
 
     private void renderCurrentCanvas() {
         clearChildren();    //清除所有Children
+        renderExitButton();
+
         if (CurrentCanvas == CanvasType.NormalCanvas) {
             //渲染当前NormalCanvas
             buttonWidgetsController.init();
-            renderExitButton();
             renderAddButton();
         } else {
             //渲染AddCanvas
@@ -114,7 +116,11 @@ public class CommandHelperScreen extends Screen {
             exitButton = ButtonWidget.builder(
                     Text.literal("<"),
                     button -> {
-                        CommandManager.getInstance().displayController.CloseUI();
+                        if(this.CurrentCanvas == CanvasType.NormalCanvas)
+                            CommandManager.getInstance().displayController.CloseUI();
+                        else if(this.CurrentCanvas == CanvasType.AddCanvas){
+                            ChangeCanvas();
+                        }
                     }
             ).build();
             exitButton.setHeight(TopBarHeight);
@@ -150,10 +156,11 @@ public class CommandHelperScreen extends Screen {
         if (NameText == null) {
             NameText = new TextFieldWidget(
                     textRenderer,
-                    (int) (windowWidth * 0.5), 24,
+                    (int) (windowWidth * 0.5), ElementHeight,
                     Text.literal("命令名称")
             );
-            NameText.setText("New Command");
+
+            NameText.setText("Command Name");
 
             NameText.setWidth((int) (windowWidth * 0.3));
             NameText.setHeight(24);
@@ -176,6 +183,7 @@ public class CommandHelperScreen extends Screen {
             CommandText.setHeight(24);
             CommandText.setX((int) (width * 0.35));
             CommandText.setY(height / 2 - ElementHeight / 2);
+            CommandText.setMaxLength(MaxCommandLength);
         }
         addDrawableChild(CommandText);
     }
@@ -215,7 +223,7 @@ public class CommandHelperScreen extends Screen {
      */
     public void addButtonChile(ButtonWidgetHandle widgetHandle) {
         //判断内容
-        if (widgetHandle == null || widgetHandle.buttonWidget == null) return;//判空
+        if (widgetHandle == null || widgetHandle.buttonWidget == null) return;  //判空
         addDrawableChild(widgetHandle.buttonWidget);
         addDrawableChild(widgetHandle.deleteButtonWidget);
     }

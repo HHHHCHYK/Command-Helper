@@ -4,7 +4,7 @@ import com.command_helper.CommandManager;
 import com.command_helper.data.CommandData;
 import net.minecraft.client.gui.DrawContext;
 
-import java.util.*;
+import java.util.ArrayList;
 
 public class ButtonWidgetsController {
 

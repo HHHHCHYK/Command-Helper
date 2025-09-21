@@ -51,7 +51,7 @@ public class CommandManager {
     }
     void EventRegistry(){
         //按T反转Gui状态
-        keyBindingRegister.AddEvent(GLFW.GLFW_KEY_T,()->{
+        keyBindingRegister.AddEvent(GLFW.GLFW_KEY_U,()->{
             displayController.ReverseUI();
         });
     }
